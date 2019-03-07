@@ -28,8 +28,8 @@ Describe 'RBAC Model' {
             Set-Location ./tests/interactive-login-bypasser/
             <#
             $chrome_process = Start-Process -FilePath "./latest/chrome" -ArgumentList "--headless","--disable-gpu","--remote-debugging-port=9222" -PassThru
-            npm install
             #>
+            npm install
             node index.js $AgentTempDirectory/test-developer.json
             #$chrome_process.Kill()
         }
