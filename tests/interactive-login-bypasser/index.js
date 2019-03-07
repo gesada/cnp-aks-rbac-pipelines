@@ -35,7 +35,8 @@ kubeCtl.stderr.on("data", async data => {
     console.log(`${cdpVersion.webSocketDebuggerUrl}`);
 
     browser = await puppeteer.connect({
-      browserWSEndpoint: cdpVersion.webSocketDebuggerUrl
+      //browserWSEndpoint: cdpVersion.webSocketDebuggerUrl
+      browserWSEndpoint: "ws://localhost:3000"
     });
 
     page = await browser.newPage();
