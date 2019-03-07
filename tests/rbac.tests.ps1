@@ -26,12 +26,8 @@ Describe 'RBAC Model' {
 
         BeforeAll {
             Set-Location ./tests/interactive-login-bypasser/
-            <#
-            $chrome_process = Start-Process -FilePath "./latest/chrome" -ArgumentList "--headless","--disable-gpu","--remote-debugging-port=9222" -PassThru
-            #>
             npm install
             node index.js $AgentTempDirectory/test-developer.json
-            #$chrome_process.Kill()
         }
 
         It 'should not have access to services' {
