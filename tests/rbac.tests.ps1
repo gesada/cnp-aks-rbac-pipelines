@@ -26,7 +26,13 @@ Describe 'RBAC Model' {
 
         BeforeAll {
             Set-Location ./tests/interactive-login-bypasser/
+
+            Write-Host "Executing npm install..."
+
             npm install
+
+            Write-Host "Finished npm install..."
+
             node index.js $AgentTempDirectory/test-developer.json
         }
 
