@@ -25,7 +25,7 @@ variables:
   fluxGithubKeySecureFileName: 'cnp-flux-github-key.yaml'
 
 jobs:
-- job: Keyvault
+- job: DeployAKS
   pool:
     vmImage: 'Ubuntu 16.04'
     #name: hmcts-agent-pool #TODO: change to hosted when merged
@@ -36,26 +36,6 @@ jobs:
       azureSubscription: $(serviceConnection)
       keyVaultName: $(keyvaultName)
       secretsFilter: 'aks-sp-id,aks-sp-secret,aks-sapp-secret,slack-webhook-url'
-  - script: |
-      echo "##vso[task.setvariable variable=aksServicePrincipalId;isOutput=true]$(aks-sp-id)"
-      echo "##vso[task.setvariable variable=aksServicePrincipalSecret;isOutput=true]$(aks-sp-secret)"
-      echo "##vso[task.setvariable variable=aksServerAppSecret;isOutput=true]$(aks-sapp-secret)"
-      echo "##vso[task.setvariable variable=slackWebhookUrl;isOutput=true]$(slack-webhook-url)"
-    displayName: 'Export Keyvault Variables'
-    name: exportKeyvault
-
-- job: DeployAKS
-  dependsOn: Keyvault
-  pool:
-    vmImage: 'Ubuntu 16.04'
-    #name: hmcts-agent-pool #TODO: change to hosted when merged
-  variables:
-    aksClusterName: $(aksResourceGroup)-cluster
-    aksServicePrincipalId: $[dependencies.Keyvault.outputs['exportKeyvault.aksServicePrincipalId']]
-    aksServicePrincipalSecret: $[dependencies.Keyvault.outputs['exportKeyvault.aksServicePrincipalSecret']]
-    aksServerAppSecret: $[dependencies.Keyvault.outputs['exportKeyvault.aksServerAppSecret']]
-    slackWebhookUrl: $[dependencies.Keyvault.outputs['exportKeyvault.slackWebhookUrl']]
-  steps:
 
   - task: AzureCLI@1
     displayName: Check VNET prerequisites
@@ -109,8 +89,8 @@ jobs:
         -aksVnetSubnetId $(aksSubnetId) 
         -aksServiceCidr $(aksServiceCidr) 
         -aksDnsServiceIp $(aksDnsServiceIp) 
-        -servicePrincipalSecret $(aksServicePrincipalSecret) 
-        -serverAppSecret $(aksServerAppSecret)'
+        -servicePrincipalSecret $(aks-sp-secret) 
+        -serverAppSecret $(aks-sapp-secret)'
 
   - task: AzureCLI@1
     displayName: 'Obtain AKS Admin access token.'
@@ -185,7 +165,7 @@ jobs:
         sed -i -e 's@${SLACK_WEBHOOK_URL}@'"$SLACK_WEBHOOK_URL"'@' templates/kured/values.yaml
         sed -i -e 's@${SLACK_USERNAME}@'"$SLACK_USERNAME"'@' templates/kured/values.yaml
     env:
-      SLACK_WEBHOOK_URL: $(slackWebhookUrl)
+      SLACK_WEBHOOK_URL: $(slack-webhook-url)
       SLACK_USERNAME: $(aksClusterName)
 
   - task: Bash@3
@@ -208,8 +188,8 @@ jobs:
                -e 's@${ACR_SERVICE_PRINCIPAL_SECRET}@'"$AKS_SP_SECRET"'@' \
           templates/repositories.yaml
     env:
-      AKS_SP_ID: $(aksServicePrincipalId)
-      AKS_SP_SECRET: $(aksServicePrincipalSecret)
+      AKS_SP_ID: $(aks-sp-id)
+      AKS_SP_SECRET: $(aks-sp-secret)
 
   - task: Bash@3
     displayName: 'Flux - Create repositories.yaml secret'
