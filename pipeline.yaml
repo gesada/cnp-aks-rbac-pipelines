@@ -284,6 +284,8 @@ jobs:
   pool:
     vmImage: 'Ubuntu 16.04'
     #name: hmcts-agent-pool #TODO: change to hosted when merged
+  services:
+    nginx: chrome-linux
   steps:
   - task: AzureCLI@1
     displayName: 'Obtain AKS Admin access token.'
