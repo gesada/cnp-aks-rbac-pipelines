@@ -29,6 +29,8 @@ jobs:
   pool:
     vmImage: 'Ubuntu 16.04'
     #name: hmcts-agent-pool #TODO: change to hosted when merged
+  variables:
+    aksClusterName: $(aksResourceGroup)-cluster
   steps:
   - task: AzureKeyVault@1
     displayName: 'Get secrets from Keyvault'
