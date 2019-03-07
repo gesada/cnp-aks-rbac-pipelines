@@ -4,6 +4,12 @@
 name: RPE AKS RBAC Enabled Pipeline
 trigger: none
 pr: none
+resources:
+  containers:
+    - container: chrome-linux
+      image: browserless/chrome
+      ports:
+      - 3000:3000
 variables:
   aksResourceGroup: ''
   aksVnetCidr: ''
@@ -275,12 +281,6 @@ jobs:
 
 - job: RunTests
   #dependsOn: DeployAKS
-  resources:
-    containers:
-      - container: chrome-linux
-        image: browserless/chrome
-        ports:
-        - 3000:3000
   pool:
     vmImage: 'Ubuntu 16.04'
     #name: hmcts-agent-pool #TODO: change to hosted when merged
