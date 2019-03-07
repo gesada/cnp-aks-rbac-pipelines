@@ -32,7 +32,7 @@ kubeCtl.stderr.on("data", async data => {
 
   try {
     const cdpVersion = await CDP.Version();
-    const browserEndpoint = "ws://localhost:3000"
+    const browserEndpoint = "ws://0.0.0.0:3000"
     
     console.log(`${browserEndpoint}`);
 
