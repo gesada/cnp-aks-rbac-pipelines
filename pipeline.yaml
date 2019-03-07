@@ -274,7 +274,7 @@ jobs:
 #         kubectl -n admin delete $(kubectl get pod -o name -l app=flux -n admin)
 
 - job: RunTests
-  dependsOn: DeployAKS
+  #dependsOn: DeployAKS
   resources:
     containers:
       - container: chrome-linux
