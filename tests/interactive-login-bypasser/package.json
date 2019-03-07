@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "chrome-remote-interface": "^0.27.1",
     "puppeteer-core": "^1.12.2"
   }
 }

@@ -1,17 +1,17 @@
-const CDP = require("chrome-remote-interface");
 const puppeteer = require("puppeteer-core");
 const { spawn } = require("child_process");
 
 if (process.argv.length !== 3) {
-  process.exit(1)
+  process.exit(1);
 }
 
-const credentialsPath = process.argv[2]
-const credentials = require(credentialsPath)
+const credentialsPath = process.argv[2];
+const credentials = require(credentialsPath);
 
 const kubeCtl = spawn("kubectl", ["get", "pods"]);
 
-const signInMessage = 'To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code'
+const signInMessage =
+  "To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code";
 
 kubeCtl.stdout.on("data", data => {
   console.log(`stdout: ${data}`);
@@ -19,9 +19,9 @@ kubeCtl.stdout.on("data", data => {
 
 kubeCtl.stderr.on("data", async data => {
   let page, browser;
-  
+
   if (!data.toString().includes(signInMessage)) {
-    return
+    return;
   }
 
   const code = data
@@ -29,11 +29,9 @@ kubeCtl.stderr.on("data", async data => {
     .split("code")[1]
     .substring(1, 10);
 
-
   try {
-    const cdpVersion = await CDP.Version();
-    const browserEndpoint = "ws://localhost:3000"
-    
+    const browserEndpoint = "ws://localhost:3000";
+
     console.log(`${browserEndpoint}`);
 
     browser = await puppeteer.connect({
@@ -71,5 +69,5 @@ kubeCtl.stderr.on("data", async data => {
 
 kubeCtl.on("close", code => {
   console.log(`child process exited with code ${code}`);
-  process.exit(code)
+  process.exit(code);
 });
