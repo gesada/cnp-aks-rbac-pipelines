@@ -33,7 +33,7 @@ Describe 'RBAC Model' {
 
             Write-Host "Finished npm install..."
 
-            node index.js $AgentTempDirectory/test-developer.json
+            DEBUG="puppeteer:*" node index.js $AgentTempDirectory/test-developer.json
         }
 
         It 'should not have access to services' {
