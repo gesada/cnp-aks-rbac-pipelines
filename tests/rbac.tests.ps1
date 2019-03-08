@@ -24,6 +24,8 @@ Describe 'RBAC Model' {
 
     Context 'Developer Role' {
 
+        $Env:DEBUG = "puppeteer:*"
+
         BeforeAll {
             Set-Location ./tests/interactive-login-bypasser/
 
@@ -33,7 +35,7 @@ Describe 'RBAC Model' {
 
             Write-Host "Finished npm install..."
 
-            DEBUG="puppeteer:*" node index.js $AgentTempDirectory/test-developer.json
+            node index.js $AgentTempDirectory/test-developer.json
         }
 
         It 'should not have access to services' {
