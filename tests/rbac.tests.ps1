@@ -24,7 +24,7 @@ Describe 'RBAC Model' {
 
     Context 'Developer Role' {
 
-        $Env:DEBUG = "puppeteer:*"
+        $Env:DEBUG = "puppeteer:*,node:*"
 
         BeforeAll {
             Set-Location ./tests/interactive-login-bypasser/

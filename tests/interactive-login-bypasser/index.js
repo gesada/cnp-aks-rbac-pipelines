@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer-core");
+const debug = require("debug")("node:tests");
 const { spawn } = require("child_process");
 
 if (process.argv.length !== 3) {
@@ -14,11 +15,13 @@ const signInMessage =
   "To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code";
 
 kubeCtl.stdout.on("data", data => {
-  console.log(`stdout: ${data}`);
+  debug(`stdout: ${data}`);
 });
 
 kubeCtl.stderr.on("data", async data => {
   let page, browser;
+
+  debug(`kubectl output: ${data}`);
 
   if (!data.toString().includes(signInMessage)) {
     return;
@@ -32,7 +35,7 @@ kubeCtl.stderr.on("data", async data => {
   try {
     const browserEndpoint = "ws://localhost:3000";
 
-    console.log(`${browserEndpoint}`);
+    debug(`${browserEndpoint}`);
 
     browser = await puppeteer.connect({
       browserWSEndpoint: browserEndpoint
@@ -68,6 +71,6 @@ kubeCtl.stderr.on("data", async data => {
 });
 
 kubeCtl.on("close", code => {
-  console.log(`child process exited with code ${code}`);
+  debug(`child process exited with code ${code}`);
   process.exit(code);
 });
