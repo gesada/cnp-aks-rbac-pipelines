@@ -3,12 +3,14 @@ const debug = require("debug")("node:tests");
 const { spawn } = require("child_process");
 
 if (process.argv.length !== 3) {
+  debug("Invalid argument");
   process.exit(1);
 }
 
 const credentialsPath = process.argv[2];
 const credentials = require(credentialsPath);
 
+debug("Spawning kubectl command");
 const kubeCtl = spawn("kubectl", ["get", "pods"]);
 
 const signInMessage =
